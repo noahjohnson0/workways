@@ -1,0 +1,25 @@
+{
+  "name": "workways",
+  "version": "0.1.0",
+  "description": "Reusable workflows, skills, and methods extracted from real projects. Scaffolds files into your repo — you own and edit them.",
+  "bin": {
+    "workways": "./bin/workways.mjs"
+  },
+  "type": "module",
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noahjohnson0/workways.git"
+  },
+  "author": "Noah Johnson",
+  "license": "MIT",
+  "private": true
+}

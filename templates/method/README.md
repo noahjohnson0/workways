@@ -1,0 +1,3 @@
+# method (stub)
+
+Extraction pending.
