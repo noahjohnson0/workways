@@ -1,0 +1,14 @@
+{
+  "name": "workways-gh-attach",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Drive a persistent signed-in Chromium profile to upload files into GitHub PR/issue user-attachments and return the resulting URLs.",
+  "bin": {
+    "gh-attach": "./gh-attach.mjs"
+  },
+  "dependencies": {
+    "chrome-cookies-secure": "^3.0.2",
+    "playwright": "^1.49.0"
+  }
+}

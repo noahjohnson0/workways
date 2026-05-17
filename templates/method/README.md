@@ -1,3 +1,0 @@
-# method (stub)
-
-Extraction pending.
