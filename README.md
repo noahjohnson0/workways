@@ -29,6 +29,11 @@ Parallel React Native e2e tooling that survives multiple concurrent worktrees:
 - `scripts/metro-lock/` — per-worktree Metro port coordination
 - `e2e/` — wdio harness with helpers and per-spec webm recording
 
+### `zsh-keybindings`
+Fix Option+Left / Option+Right in zsh so they jump word-by-word (matching Claude Code, browsers, and every native macOS text field). Without this you get garbage like `;3C;3D` in your prompt.
+- `shell/option-arrow.zsh` — drop-in `bindkey` rules; `source` from `~/.zshrc`
+- `docs/methods/zsh-keybindings.md` — explainer with debugging tips for non-standard terminals
+
 ## Philosophy
 
 Scaffold, don't depend. Half of this is bash + Markdown — that has to live in your repo anyway. The Node/Playwright pieces you'll want to customize. Owning the files makes both natural.
