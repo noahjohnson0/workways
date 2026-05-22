@@ -24,10 +24,13 @@ End-to-end pipeline for embedding screenshots/videos in **private-repo** PR desc
 - `docs/methods/pr-screenshots.md` — the convention
 
 ### `rn-e2e`
-Parallel React Native e2e tooling that survives multiple concurrent worktrees:
-- `scripts/sim-lock/` — auto-discovers free iOS simulators, provisions on demand
-- `scripts/metro-lock/` — per-worktree Metro port coordination
-- `e2e/` — wdio harness with helpers and per-spec webm recording
+Full parallel-Appium-on-iOS toolkit for React Native / Expo apps — run multiple e2e suites concurrently from separate worktrees without sim, Metro, or DerivedData collisions:
+- `scripts/sim-lock/` — auto-discovers a free iOS sim from a candidate list, boots it, holds a UDID-keyed lock; exports `IOS_UDID` / `IOS_DEVICE_NAME`
+- `scripts/metro-lock/` — allocates a free Metro port from a range, holds a port-keyed lock; `with-derived-data.sh` redirects Xcode `DerivedData` into a per-worktree dir so parallel `expo run:ios` builds don't corrupt each other
+- `scripts/e2e/run-with-metro.sh` — spawns `expo start` on the locked port, waits for `/status`, runs wdio, tears Metro down on exit (`E2E_METRO_EXTERNAL=1` to skip)
+- `e2e/` — wdio + Mocha harness with per-spec webm recording (`startRecordingScreen` → ffmpeg → `e2e/recordings/`), native-build and Expo-Go wdio configs, accessibility-id selector helpers, and a `version-footer` spec that asserts build-mode-aware version strings
+- `docs/methods/parallel-appium.md` — composition diagram, the Metro-port-baked-into-`.app` gotcha (and the `buildReactNativeFromSource: true` workaround), and conventions for reserving a sim for manual QA
+- `docs/proof/PARALLEL-VALIDATION.md` — captured evidence from cumbreTrial #82/#87: two worktrees, two sims, two Metros, `login-invalid` green on both concurrently with `lsof` showing each app on its own bundler port
 
 ### `zsh-keybindings`
 Fix Option+Left / Option+Right in zsh so they jump word-by-word (matching Claude Code, browsers, and every native macOS text field). Without this you get garbage like `;3C;3D` in your prompt.

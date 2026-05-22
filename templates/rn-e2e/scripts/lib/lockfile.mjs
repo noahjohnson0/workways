@@ -10,7 +10,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { execSync, spawn } from 'node:child_process';
 
-export const WORKWAYS_DIR = path.join(os.homedir(), '.workways');
+export const CUMBRE_DIR = path.join(os.homedir(), '.cumbre');
 
 export function pidAlive(pid) {
   if (!pid || pid <= 0) return false;
@@ -81,11 +81,11 @@ export async function runWithHeartbeat(label, cmd, args, intervalMs = 5 * 60 * 1
 /**
  * Build a lock manager bound to a directory.
  * @param {object} opts
- * @param {string} opts.dir - directory under ~/.workways to hold lockfiles
+ * @param {string} opts.dir - directory under ~/.cumbre to hold lockfiles
  * @param {(key:string)=>boolean} opts.validateKey - reject bad keys early
  */
 export function createLockManager({ dir, validateKey }) {
-  const lockDir = path.join(WORKWAYS_DIR, dir);
+  const lockDir = path.join(CUMBRE_DIR, dir);
 
   const ensureDir = () => fs.mkdirSync(lockDir, { recursive: true });
 

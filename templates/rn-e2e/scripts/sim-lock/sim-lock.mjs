@@ -6,17 +6,17 @@
 //
 // Pool: auto-discovered via `xcrun simctl list devices available --json`
 // (iPhone-family sims with installed runtimes). Override by writing
-// ~/.workways/sim-pool.json: { "sims": [{ "udid": "...", "name": "..." }, ...] }.
+// ~/.cumbre/sim-pool.json: { "sims": [{ "udid": "...", "name": "..." }, ...] }.
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import {
-  WORKWAYS_DIR, createLockManager, pidAlive, gitBranch, processTty,
+  CUMBRE_DIR, createLockManager, pidAlive, gitBranch, processTty,
   isTty, prompt, runWithHeartbeat,
 } from '../lib/lockfile.mjs';
 
-const POOL_FILE = path.join(WORKWAYS_DIR, 'sim-pool.json');
+const POOL_FILE = path.join(CUMBRE_DIR, 'sim-pool.json');
 
 const argv = process.argv.slice(2);
 const cmd = argv[0];

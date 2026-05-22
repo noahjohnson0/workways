@@ -4,7 +4,7 @@
 # Usage:
 #   with-lock.sh <udid> -- <cmd...>
 #   with-lock.sh --from-env IOS_UDID -- <cmd...>
-#   with-lock.sh --claim-any -- <cmd...>      # picks from ~/.workways/sim-pool.json
+#   with-lock.sh --claim-any -- <cmd...>      # picks from ~/.cumbre/sim-pool.json
 #
 # Exits with the wrapped command's status. Releases the lock on EXIT/INT/TERM.
 

@@ -15,10 +15,10 @@ import fs from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
 import {
-  WORKWAYS_DIR, createLockManager, pidAlive, gitBranch, processTty,
+  CUMBRE_DIR, createLockManager, pidAlive, gitBranch, processTty,
 } from '../lib/lockfile.mjs';
 
-const POOL_FILE = path.join(WORKWAYS_DIR, 'metro-pool.json');
+const POOL_FILE = path.join(CUMBRE_DIR, 'metro-pool.json');
 const DEFAULT_POOL = [8081, 8082, 8083, 8084];
 
 const argv = process.argv.slice(2);

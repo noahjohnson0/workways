@@ -12,7 +12,7 @@ Four WebdriverIO + Mocha specs covering the auth flows wired to Firebase.
    ```
    npx expo run:ios --configuration Debug
    ```
-   Then locate the resulting `.app` (typically `ios/build/Build/Products/Debug-iphonesimulator/<app>.app`) and set `IOS_APP_PATH` in `.env.test` to its absolute path.
+   Then locate the resulting `.app` (typically `ios/build/Build/Products/Debug-iphonesimulator/cumbretrial.app`) and set `IOS_APP_PATH` in `.env.test` to its absolute path.
 
 ## Setup
 
@@ -47,7 +47,7 @@ Wraps the suite in `with-lock.sh` (sim) → `with-metro.sh` (port) → `run-with
 **Test-dev loop**: with Metro auto-started, editing a JS file hot-reloads it into the test app between runs — no `.app` rebuild needed. To target a different Metro port, you must rebuild the `.app` once with that port baked in:
 
 ```
-scripts/metro-lock/with-metro.sh --from-env RCT_METRO_PORT \
+.claude/skills/cumbre/scripts/metro-lock/with-metro.sh --from-env RCT_METRO_PORT \
   -- npx expo run:ios --device "iPhone 16"
 ```
 
@@ -75,8 +75,28 @@ Both sims can be open in Simulator.app at the same time. Don't point manual buil
 - Native iOS alerts (RN's `Alert.alert`) are read with `driver.getAlertText()` — see `e2e/helpers/alerts.ts`.
 - Each spec resets app state with `driver.terminateApp` + `activateApp` in `beforeEach` so order doesn't matter.
 
+## Verifying the login version footer in Expo Go *and* a native build
+
+The login screen renders different version-footer strings depending on the runtime:
+
+- **Expo Go** (`Constants.executionEnvironment === 'storeClient'`) → `<branch> @ <shortsha>` — read from `extra.gitBranch` / `extra.gitCommit` injected by `app.config.js`.
+- **Native dev/release build** → `v{APP_VERSION} (build {BUILD})`, or just `v{APP_VERSION}` if no build number.
+
+`e2e/specs/version-footer.e2e.ts` asserts the rendered label equals the value computed from `app.json` + `git rev-parse` for the current run mode, so a stale or wrong-branch footer fails the test.
+
+```
+# Native build mode — included in the default suite, expects v1.0.0[ (build N)].
+npm run e2e:ios:locked
+
+# Expo Go mode — drives the pre-installed Expo Go app and deep-links to Metro.
+# No .app rebuild needed; runs only the version-footer spec.
+npm run e2e:ios:expo-go
+```
+
+For the native-build assertion to match a build number, set `E2E_EXPECTED_BUILD=<N>` before running — otherwise the spec expects just `v{APP_VERSION}` (covers `expo run:ios` defaults that don't bump CFBundleVersion).
+
 ## Known limits
 
 - No Android suite yet — would need `appium-uiautomator2-driver` and an Android build path.
-- The create-user "success" case generates a fresh timestamped Firebase Auth user each run; those accounts accumulate over time. Add cleanup or use a dedicated test project.
-- If you see `RCTThirdPartyComponentsProvider` crash on launch, your `ios/` was prebuilt before `react-native-svg` was installed — run `rm -rf ios && npx expo prebuild --platform ios --clean` then rebuild.
+- The create-user "success" case generates a fresh timestamped Firebase Auth user each run; those accounts accumulate over time. Cleanup is tracked in [#31](https://github.com/Sarahoyos/cumbreTrial/issues/31) but isn't required for the suite to pass.
+- If you see `RCTThirdPartyComponentsProvider` crash on launch, your `ios/` was prebuilt before `react-native-svg` was installed — run `rm -rf ios && npx expo prebuild --platform ios --clean` then rebuild. Context in [#34](https://github.com/Sarahoyos/cumbreTrial/issues/34).

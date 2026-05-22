@@ -13,7 +13,7 @@ A Debug `.app` baked by `expo run:ios` hard-codes its JS dev URL at build time u
 
 ## Setup
 
-Zero-config. The default pool is `[8081, 8082, 8083, 8084]`. Override by writing `~/.workways/metro-pool.json`:
+Zero-config. The default pool is `[8081, 8082, 8083, 8084]`. Override by writing `~/.cumbre/metro-pool.json`:
 
 ```json
 { "ports": [8081, 8082, 8083, 8084, 8085] }
@@ -24,7 +24,7 @@ Zero-config. The default pool is `[8081, 8082, 8083, 8084]`. Override by writing
 ## CLI
 
 ```
-node scripts/metro-lock/metro-lock.mjs <cmd>
+node .claude/skills/cumbre/scripts/metro-lock/metro-lock.mjs <cmd>
 ```
 
 - `list` — show all current Metro port holders.
@@ -37,23 +37,50 @@ node scripts/metro-lock/metro-lock.mjs <cmd>
 ## `with-metro.sh` wrapper
 
 ```
-scripts/metro-lock/with-metro.sh <port> -- <cmd...>
-scripts/metro-lock/with-metro.sh --from-env RCT_METRO_PORT -- <cmd...>
-scripts/metro-lock/with-metro.sh --claim-any -- <cmd...>
+.claude/skills/cumbre/scripts/metro-lock/with-metro.sh <port> -- <cmd...>
+.claude/skills/cumbre/scripts/metro-lock/with-metro.sh --from-env RCT_METRO_PORT -- <cmd...>
+.claude/skills/cumbre/scripts/metro-lock/with-metro.sh --claim-any -- <cmd...>
 ```
 
 Acquires before running, releases on EXIT/INT/TERM. Exports `RCT_METRO_PORT` so:
 - `expo run:ios` bakes the JS dev URL with the right port.
 - `expo start` listens on that same port automatically (it reads `RCT_METRO_PORT`).
 
+## DerivedData caveat (issue #82)
+
+`metro-lock` bakes the right port into the *build*, but Xcode's `DerivedData`
+is shared across worktrees by default. If worktree A built with port 8081,
+its `.o` files sit in `~/Library/Developer/Xcode/DerivedData/cumbretrial-*`
+with `RCT_METRO_PORT=8081` baked in as a preprocessor define. When worktree
+B then builds with `RCT_METRO_PORT=8082`, Xcode reuses those objects (sources
+unchanged), only re-links, and the resulting `.app` still points at 8081 —
+loading JS from the wrong Metro.
+
+The fix: give each worktree its own DerivedData via `xcodebuild
+-derivedDataPath <path>`. `with-derived-data.sh` does this transparently by
+shimming `xcodebuild` on `PATH` to inject the flag with a stable per-worktree
+path (sha1 of the worktree's git toplevel).
+
+```
+.claude/skills/cumbre/scripts/metro-lock/with-derived-data.sh -- \
+  npx expo run:ios --device "iPhone 16 Pro"
+```
+
+Skip it and you're back to the symptom: the app on the sim connects to
+whichever Metro happened to bake the cache last, regardless of what port
+`metro-lock` assigned this worktree.
+
 ## Composing with sim-lock
 
 The clean way to launch manual QA in a worktree:
 
 ```
-scripts/sim-lock/with-lock.sh --claim-any -- \
-scripts/metro-lock/with-metro.sh --claim-any -- \
+.claude/skills/cumbre/scripts/sim-lock/with-lock.sh --claim-any -- \
+.claude/skills/cumbre/scripts/metro-lock/with-metro.sh --claim-any -- \
+.claude/skills/cumbre/scripts/metro-lock/with-derived-data.sh -- \
   npx expo run:ios --device "$IOS_DEVICE_NAME"
 ```
 
-Both locks are released when the inner command exits.
+Both locks are released when the inner command exits; the DerivedData shim
+cleans up its temp PATH entry on exit (the per-worktree DerivedData dir
+itself is intentionally persistent, for incremental rebuilds).

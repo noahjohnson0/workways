@@ -11,8 +11,11 @@ const requireEnv = (key: string): string => {
   return v;
 };
 
-const appPath = process.env.IOS_APP_PATH;
-if (!appPath) {
+// In Expo Go mode we drive Apple's pre-installed Expo Go bundle and deep-link
+// to Metro — no local .app to install. Skip the IOS_APP_PATH warning in that case.
+const expoGoMode = process.env.IOS_BUNDLE_ID === 'host.exp.Exponent';
+const appPath = expoGoMode ? undefined : process.env.IOS_APP_PATH;
+if (!expoGoMode && !appPath) {
   // eslint-disable-next-line no-console
   console.warn('[wdio] IOS_APP_PATH is empty; run `npx expo run:ios` and set IOS_APP_PATH in .env.test before `npm run e2e:ios`.');
 }

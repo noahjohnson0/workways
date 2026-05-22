@@ -2,7 +2,7 @@
 
 Coordinate iOS simulator usage across worktrees and parallel Claude sessions.
 
-`xcrun simctl` only reports whether a sim is *booted* — it can't tell you whether another worktree's e2e run or QA session is actively driving it. `sim-lock` adds a lightweight intent layer: each sim gets a lockfile under `~/.workways/sim-locks/<udid>.lock` containing the PID, worktree, branch, and started-at of whoever claimed it. The status line reads these locks so every session can see at a glance which sim it owns.
+`xcrun simctl` only reports whether a sim is *booted* — it can't tell you whether another worktree's e2e run or QA session is actively driving it. `sim-lock` adds a lightweight intent layer: each sim gets a lockfile under `~/.cumbre/sim-locks/<udid>.lock` containing the PID, worktree, branch, and started-at of whoever claimed it. The status line reads these locks so every session can see at a glance which sim it owns.
 
 ## Convention
 
@@ -15,7 +15,7 @@ If both are busy, the next caller fails fast with a clear "held by <branch>" mes
 
 ## Setup
 
-Zero-config in the common case. `sim-lock claim-any` auto-discovers iPhone simulators via `xcrun simctl list devices available --json` — no pool file required. To pin a specific subset, drop a `~/.workways/sim-pool.json` (overrides discovery):
+Zero-config in the common case. `sim-lock claim-any` auto-discovers iPhone simulators via `xcrun simctl list devices available --json` — no pool file required. To pin a specific subset, drop a `~/.cumbre/sim-pool.json` (overrides discovery):
 
 ```json
 {
@@ -37,7 +37,7 @@ On a non-TTY (CI, piped stdin), it prints the manual commands and exits non-zero
 ## CLI
 
 ```
-node scripts/sim-lock/sim-lock.mjs <cmd>
+node .claude/skills/cumbre/scripts/sim-lock/sim-lock.mjs <cmd>
 ```
 
 - `list` — show all current holders, with stale (dead PID) annotation.
@@ -53,9 +53,9 @@ Status messages (`acquired …`, `released …`) go to stderr so machine-readabl
 ## `with-lock.sh` wrapper
 
 ```
-scripts/sim-lock/with-lock.sh <udid> -- <cmd...>
-scripts/sim-lock/with-lock.sh --from-env IOS_UDID -- <cmd...>
-scripts/sim-lock/with-lock.sh --claim-any -- <cmd...>
+.claude/skills/cumbre/scripts/sim-lock/with-lock.sh <udid> -- <cmd...>
+.claude/skills/cumbre/scripts/sim-lock/with-lock.sh --from-env IOS_UDID -- <cmd...>
+.claude/skills/cumbre/scripts/sim-lock/with-lock.sh --claim-any -- <cmd...>
 ```
 
 Acquires before running the command, releases on EXIT/INT/TERM. Exports `IOS_UDID` into the child env so `wdio.conf.ts` picks it up (it prefers `IOS_UDID` over `IOS_DEVICE_NAME` + `IOS_PLATFORM_VERSION`).
