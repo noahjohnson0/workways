@@ -11,6 +11,7 @@ export const CLUSTERS = {
   'pr-screenshots': 'screenshot.sh (capture) + gh-attach (upload + PR body rewrite) + convention doc.',
   'rn-e2e': 'sim-lock + metro-lock + wdio harness for parallel React Native e2e across worktrees.',
   'zsh-keybindings': 'Option+Left/Right word-jump in zsh — kills the `;3C;3D` garbage in your prompt.',
+  'browser-attach': 'Drive your real logged-in Chrome over CDP without the automation fingerprint — Claude skill + per-site subskills (eBay, FB Marketplace).',
 };
 
 export function list() {

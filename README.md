@@ -32,6 +32,25 @@ Full parallel-Appium-on-iOS toolkit for React Native / Expo apps — run multipl
 - `docs/methods/parallel-appium.md` — composition diagram, the Metro-port-baked-into-`.app` gotcha (and the `buildReactNativeFromSource: true` workaround), and conventions for reserving a sim for manual QA
 - `docs/proof/PARALLEL-VALIDATION.md` — captured evidence from cumbreTrial #82/#87: two worktrees, two sims, two Metros, `login-invalid` green on both concurrently with `lsof` showing each app on its own bundler port
 
+### `browser-attach`
+Drive the user's **real, logged-in Chrome** over CDP instead of letting an
+automation MCP spawn its own flagged browser. The automation fingerprint
+(`navigator.webdriver` + the "controlled by automated test software" banner)
+comes from the `--enable-automation` launch switch, not the CDP connection — so
+attaching to a human-launched Chrome looks like an ordinary browser. Ships a
+Claude skill with **lazy-loaded per-site subskills**:
+- `.claude/skills/browser-attach/SKILL.md` — the attach setup (debug port +
+  non-default profile for Chrome 136+, `--browserUrl` MCP arg, restart) and the
+  scrape-with-`evaluate_script` working pattern
+- `.claude/skills/browser-attach/sites/ebay.md` — Akamai `/sch` "Access Denied"
+  and the search-from-homepage workaround; result selectors; query params
+- `.claude/skills/browser-attach/sites/facebook.md` — Marketplace login,
+  location-scoped URLs, "Partner listing" ≠ local, scroll-to-load, obfuscated-
+  class scraping
+- `.claude/skills/browser-attach/sites/_new-site.md` — stub for the next site
+- `docs/methods/browser-attach.md` — the method, including what it does/doesn't
+  defeat (beats the flag; not Akamai/Cloudflare/Turnstile or Google sign-in)
+
 ### `zsh-keybindings`
 Fix Option+Left / Option+Right in zsh so they jump word-by-word (matching Claude Code, browsers, and every native macOS text field). Without this you get garbage like `;3C;3D` in your prompt.
 - `shell/option-arrow.zsh` — drop-in `bindkey` rules; `source` from `~/.zshrc`
