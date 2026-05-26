@@ -23,8 +23,11 @@ trap cleanup EXIT INT TERM
 
 if [[ "${E2E_METRO_EXTERNAL:-}" != "1" ]]; then
   echo "[e2e] starting metro on port $PORT"
-  # --no-dev=false keeps Debug behavior; --port pins the port; -- > log to file
-  ( npx expo start --port "$PORT" --no-open ) > "/tmp/cumbre-e2e-metro-$PORT.log" 2>&1 &
+  # --port pins the port; backgrounded with output redirected to a log file.
+  # (No --no-open: it isn't a valid `expo start` flag — Expo CLI exits with
+  # "unknown or unexpected option" — and `expo start` is headless by default;
+  # it only opens a target when you pass -a/-i/-w or press a key interactively.)
+  ( npx expo start --port "$PORT" ) > "/tmp/cumbre-e2e-metro-$PORT.log" 2>&1 &
   METRO_PID=$!
 
   # Wait for Metro to respond on /status (RN packager returns "packager-status:running").
