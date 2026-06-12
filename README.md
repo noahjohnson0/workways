@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.png" alt="workways" width="200">
+</p>
+
 # workways
 
 **Agentic workflows, skills, and methods for AI coding agents.** Battle-tested patterns pulled out of real Claude Code projects and packaged so you can drop them into your own. Most clusters ship a ready-to-use `.claude/` skill or a `CLAUDE.md`-linkable method, so your agent picks up the capability the moment it lands: drive a real logged-in browser, run parallel e2e suites, attach screenshots to PRs, see UI options side by side.
