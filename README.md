@@ -1,11 +1,14 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.png">
-    <img src="docs/assets/logo-light.png" alt="workways" width="200">
-  </picture>
-</p>
-
-# workways
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="220" valign="middle">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.png">
+<img src="docs/assets/logo-light.png" alt="workways" width="200">
+</picture>
+</td>
+<td valign="middle"><h1>W&nbsp;O&nbsp;R&nbsp;K&nbsp;W&nbsp;A&nbsp;Y&nbsp;S</h1></td>
+</tr>
+</table>
 
 **Agentic workflows, skills, and methods for AI coding agents.** Battle-tested patterns pulled out of real Claude Code projects and packaged so you can drop them into your own. Most clusters ship a ready-to-use `.claude/` skill or a `CLAUDE.md`-linkable method, so your agent picks up the capability the moment it lands: drive a real logged-in browser, run parallel e2e suites, attach screenshots to PRs, see UI options side by side.
 
