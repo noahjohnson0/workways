@@ -1,6 +1,8 @@
 # workways
 
-Reusable workflows, skills, and methods extracted from real projects. Distributed as a scaffolder — `npx workways add <cluster>` copies files into your repo so you own and edit them, rather than depending on `workways` at runtime.
+**Agentic workflows, skills, and methods for AI coding agents.** Battle-tested patterns pulled out of real Claude Code projects and packaged so you can drop them into your own. Most clusters ship a ready-to-use `.claude/` skill or a `CLAUDE.md`-linkable method, so your agent picks up the capability the moment it lands: drive a real logged-in browser, run parallel e2e suites, attach screenshots to PRs, see UI options side by side.
+
+Distributed as a scaffolder, not a runtime dependency: `npx workways add <cluster>` copies the files into your repo so you own and edit them, instead of depending on `workways` at runtime.
 
 ## Quickstart
 
@@ -55,6 +57,10 @@ Claude skill with **lazy-loaded per-site subskills**:
 Fix Option+Left / Option+Right in zsh so they jump word-by-word (matching Claude Code, browsers, and every native macOS text field). Without this you get garbage like `;3C;3D` in your prompt.
 - `shell/option-arrow.zsh` — drop-in `bindkey` rules; `source` from `~/.zshrc`
 - `docs/methods/zsh-keybindings.md` — explainer with debugging tips for non-standard terminals
+
+### `serveoptions`
+Make a visual/UX decision by *seeing* it. Generates N meaningfully-distinct variations of a UI feature, drops a floating dev-only selector pill that cycles them via a `?option=N` URL param, and serves locally so you pick the winner in the browser. After you choose, the selector and losing options are stripped, leaving only the chosen implementation.
+- `.claude/skills/serveoptions/SKILL.md` — the workflow (build options → wire selector → serve → keep the winner)
 
 ## Philosophy
 

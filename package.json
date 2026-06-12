@@ -1,7 +1,18 @@
 {
   "name": "workways",
   "version": "0.1.0",
-  "description": "Reusable workflows, skills, and methods extracted from real projects. Scaffolds files into your repo — you own and edit them.",
+  "description": "Agentic workflows, skills, and methods for AI coding agents. Battle-tested Claude Code patterns you scaffold into your own repo with npx.",
+  "keywords": [
+    "claude-code",
+    "claude",
+    "ai-agents",
+    "agentic",
+    "agent-skills",
+    "skills",
+    "workflows",
+    "scaffolder",
+    "developer-tools"
+  ],
   "bin": {
     "workways": "./bin/workways.mjs"
   },
