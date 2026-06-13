@@ -14,6 +14,10 @@
 
 Distributed as a scaffolder, not a runtime dependency: `npx workways add <cluster>` copies the files into your repo so you own and edit them, instead of depending on `workways` at runtime.
 
+## Demo
+
+![workways CLI](docs/assets/screenshot.png)
+
 ## Quickstart
 
 ```bash
