@@ -85,6 +85,11 @@ Verify a Godot 4.x change by *seeing* it, plus the co-op + dedicated-server less
 - `scripts/godot-shot/godot-shot.sh` / `.ps1` — wrapper that finds the Godot binary, rebuilds the class-name cache (`--import`, else a fresh checkout dies with "Identifier not declared"), runs the shot, and copies PNGs to `./shots/`
 - `docs/methods/godot-coop.md` — the gotchas: bump `PROTOCOL_VERSION` when the `@rpc` surface on an always-present node changes (the checksum-mismatch trap), `set_multiplayer_authority` after `add_child`, `call_local` reliable RPCs for shared state, headless still needs `libX11`/`libGL` linked, mount a volume for `user://`, `HeightMapShape3D` over `ConcavePolygonShape3D` for terrain, MultiMesh-batch repeated props
 
+### `prose-voice`
+Kill the tells that make writing read as AI-generated. The giveaway is sentence *shapes* (antithesis, aphorisms, rhetorical-question reveals, em-dash asides), not vocabulary, so banning hype words alone never fixes it. Drops a banned-constructions checklist plus a scanner that flags the mechanical tells and fails non-zero, so it slots into pre-commit or CI.
+- `docs/methods/writing-voice.md` — the checklist, with before/after rewrites, and the flat-technical default register
+- `scripts/prose-scan.mjs` — dependency-free Node scanner: `node scripts/prose-scan.mjs content/**/*.md`
+
 ## Philosophy
 
 Scaffold, don't depend. Half of this is bash + Markdown — that has to live in your repo anyway. The Node/Playwright pieces you'll want to customize. Owning the files makes both natural.

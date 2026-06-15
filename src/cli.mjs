@@ -14,6 +14,7 @@ export const CLUSTERS = {
   'zsh-keybindings': 'Option+Left/Right word-jump in zsh — kills the `;3C;3D` garbage in your prompt.',
   'browser-attach': 'Drive your real logged-in Chrome over CDP without the automation fingerprint — Claude skill + per-site subskills (eBay, FB Marketplace).',
   godot: 'Headless Godot 4.x verification: capture the viewport to a PNG from a no-window boot, plus a co-op + dedicated-server gotchas method.',
+  'prose-voice': 'Kill the AI-voice tells in writing: a banned-constructions checklist plus a dependency-free scanner you can wire into pre-commit.',
 };
 
 export function list() {
