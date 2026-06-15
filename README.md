@@ -36,8 +36,10 @@ Shipping methodology: atomic-PR, ephemeral worktree, manual-QA gate, PR-screensh
 ### `pr-screenshots`
 End-to-end pipeline for embedding screenshots/videos in **private-repo** PR descriptions:
 - `scripts/screenshot.sh` — iOS-sim screenshot helper, names by branch + route
+- `scripts/record-webm.mjs` — record a headless webm of a local page with Playwright, optionally driving a control on a timer (cycling a `serveoptions` picker, demoing a flow); yields stills from the same run
 - `scripts/gh-attach/` — Playwright wrapper that borrows your Chrome session, uploads to `github.com/user-attachments`, and rewrites the PR body in place
 - `docs/methods/pr-screenshots.md` — the convention
+- `docs/methods/headless-webm.md` — the headless-recording gotchas (recordVideo on the context, close-to-flush, VP8→VP9 re-encode, size vs deviceScaleFactor)
 
 ### `rn-e2e`
 Full parallel-Appium-on-iOS toolkit for React Native / Expo apps — run multiple e2e suites concurrently from separate worktrees without sim, Metro, or DerivedData collisions:

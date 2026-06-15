@@ -8,7 +8,8 @@ const TEMPLATES = resolve(__dirname, '..', 'templates');
 
 export const CLUSTERS = {
   method: 'Shipping methodology — atomic-PR, ephemeral worktree, manual-QA gate, PR screenshot rule.',
-  'pr-screenshots': 'screenshot.sh (capture) + gh-attach (upload + PR body rewrite) + convention doc.',
+  'pr-screenshots': 'screenshot.sh (capture) + record-webm.mjs (headless Playwright video) + gh-attach (upload + PR body rewrite) + convention doc.',
+  serveoptions: 'Make a visual decision by seeing it: N variations behind a ?option=N dev-only picker pill, served locally, pick the winner, strip the rest.',
   'rn-e2e': 'sim-lock + metro-lock + wdio harness for parallel React Native e2e across worktrees.',
   'zsh-keybindings': 'Option+Left/Right word-jump in zsh — kills the `;3C;3D` garbage in your prompt.',
   'browser-attach': 'Drive your real logged-in Chrome over CDP without the automation fingerprint — Claude skill + per-site subskills (eBay, FB Marketplace).',
