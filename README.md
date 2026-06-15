@@ -76,6 +76,13 @@ Fix Option+Left / Option+Right in zsh so they jump word-by-word (matching Claude
 Make a visual/UX decision by *seeing* it. Generates N meaningfully-distinct variations of a UI feature, drops a floating dev-only selector pill that cycles them via a `?option=N` URL param, and serves locally so you pick the winner in the browser. After you choose, the selector and losing options are stripped, leaving only the chosen implementation.
 - `.claude/skills/serveoptions/SKILL.md` — the workflow (build options → wire selector → serve → keep the winner)
 
+### `godot`
+Verify a Godot 4.x change by *seeing* it, plus the co-op + dedicated-server lessons that cost real debugging time. Godot's `--headless` mode runs a dummy `DisplayServer` (no window) but still renders internally, so you can capture the viewport to a PNG from a headless boot, on CI, a VM, or a remote shell where an OS screen-grab is blocked.
+- `.claude/skills/godot-shots/SKILL.md` — the agent workflow and the capture pattern that actually produces a clean frame (settle N process frames so GI/fog/shadows finish, `await RenderingServer.frame_post_draw`, then `get_viewport().get_texture().get_image().save_png()`)
+- `scripts/godot-shot/dev_shots.gd` — drop-in autoload: parses `--shot <name>`, runs your registered scene setup, captures, quits
+- `scripts/godot-shot/godot-shot.sh` / `.ps1` — wrapper that finds the Godot binary, rebuilds the class-name cache (`--import`, else a fresh checkout dies with "Identifier not declared"), runs the shot, and copies PNGs to `./shots/`
+- `docs/methods/godot-coop.md` — the gotchas: bump `PROTOCOL_VERSION` when the `@rpc` surface on an always-present node changes (the checksum-mismatch trap), `set_multiplayer_authority` after `add_child`, `call_local` reliable RPCs for shared state, headless still needs `libX11`/`libGL` linked, mount a volume for `user://`, `HeightMapShape3D` over `ConcavePolygonShape3D` for terrain, MultiMesh-batch repeated props
+
 ## Philosophy
 
 Scaffold, don't depend. Half of this is bash + Markdown — that has to live in your repo anyway. The Node/Playwright pieces you'll want to customize. Owning the files makes both natural.
