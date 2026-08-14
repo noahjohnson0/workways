@@ -24,6 +24,26 @@ looks like an ordinary browser: `webdriver` is `false`, no banner, real cookies.
 - **Just need public data / prices / text** → use WebFetch/WebSearch. No browser,
   no fingerprint, nothing to detect. Don't reach for the browser by default.
 
+## First: is CDP even the right route?
+
+This skill's route drives a **second** Chrome on a dedicated profile, which
+starts **logged out**. You sign into the sites you need once, inside that
+profile, and it persists.
+
+If what you actually want is the user's **existing** sessions in the Chrome
+they're using right now, this is the wrong route and no amount of flag-tweaking
+will get you there. Chrome 136+ refuses `--remote-debugging-port` on the default
+profile as anti-malware hardening, with no override. Use the Claude-in-Chrome
+extension instead: it ships built-in `mcp__claude-in-chrome__*` tools, needs no
+launch flags, and operates the real window. See
+`docs/methods/chrome-native-attach.md` for setup and failure diagnosis.
+
+Also, before trusting any browser MCP: `claude mcp list` reports stdio servers as
+connected the moment the process spawns, so a `chrome-devtools` entry pointing at
+a dead `9222` shows a green check and then fails on first use, and a `playwright`
+entry with `--browser chrome` shows a green check and then launches its own fresh
+browser. Verify with `lsof -nP -iTCP:9222 -sTCP:LISTEN` instead.
+
 ## One-time setup (per machine)
 
 1. **Quit Chrome fully** — otherwise the debug flag is silently dropped and you

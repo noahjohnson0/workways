@@ -1,5 +1,13 @@
 # Method: attach to your real Chrome instead of spawning an automated one
 
+> **Two routes exist. Pick deliberately.** This doc covers the CDP route, which
+> drives a *second* Chrome on a dedicated profile. That profile starts logged
+> out, so it does not give you your existing sessions. If you need your actual
+> logins, use the Claude-in-Chrome extension instead, documented in
+> [`chrome-native-attach.md`](./chrome-native-attach.md), which drives your real
+> daily-driver Chrome with no launch flags at all. That doc has the routing
+> table.
+
 ## The problem
 
 Browser-automation MCPs (`chrome-devtools-mcp`, Playwright) launch Chrome with
@@ -26,7 +34,8 @@ port, you can attach over CDP and remote-control it. `navigator.webdriver` stays
 1. Quit Chrome fully (`killall "Google Chrome"`) — otherwise the debug flag is
    silently dropped ("Opening in existing browser session").
 2. User launches a debug instance with a **non-default profile** (Chrome 136+
-   blocks remote debugging on the default profile as anti-malware hardening):
+   blocks remote debugging on the default profile as anti-malware hardening,
+   silently: the flag is accepted and nothing ever listens on the port):
    ```bash
    /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
      --remote-debugging-port=9222 --user-data-dir="$HOME/chrome-attach"
