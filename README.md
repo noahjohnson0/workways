@@ -68,6 +68,15 @@ Claude skill with **lazy-loaded per-site subskills**:
 - `.claude/skills/browser-attach/sites/_new-site.md` — stub for the next site
 - `docs/methods/browser-attach.md` — the method, including what it does/doesn't
   defeat (beats the flag; not Akamai/Cloudflare/Turnstile or Google sign-in)
+- `docs/methods/chrome-native-attach.md` — the **other** route: the
+  Claude-in-Chrome extension over native messaging, which drives your actual
+  daily-driver Chrome with your real logins and zero launch flags. Includes the
+  routing table for choosing between the two, why Chrome 136+ makes CDP-on-the-
+  default-profile a permanent dead end, the extension → native host → CLI
+  connection path, a "not connected" diagnosis list (unrestarted Chrome, account
+  mismatch, stale version-pinned host wrapper, MDM native-messaging blocklist),
+  and the two red herrings: `DevToolsActivePort`, and `claude mcp list` showing
+  green for browser MCPs that are not actually driving anything
 
 ### `zsh-keybindings`
 Fix Option+Left / Option+Right in zsh so they jump word-by-word (matching Claude Code, browsers, and every native macOS text field). Without this you get garbage like `;3C;3D` in your prompt.
