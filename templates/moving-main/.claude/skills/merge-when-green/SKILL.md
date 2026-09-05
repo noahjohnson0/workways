@@ -23,9 +23,16 @@ mid-merge right now. Full background: `docs/methods/moving-main.md`.
    assets, re-import before trusting a local test failure:
    `godot --headless --path . --editor --quit` (or the engine's equivalent).
    Run imports one at a time; concurrent imports across worktrees race.
-4. **Check what CI actually gates.** Compare the test files the PR adds against
+4. **Check what CI actually gates**, after establishing how it finds tests.
+   If the workflow names suites, grep it:
    `grep -o 'tests/[A-Za-z0-9_./-]*' .github/workflows/*.yml | sort -u`.
-   Run anything CI does not, by hand, and say so when you report.
+   If it calls a runner script instead
+   (`grep -nE 'run:.*\.(py|sh|mjs|js)' .github/workflows/*.yml`), tests are
+   probably auto-discovered: read that script and run its discovery function,
+   because grepping the yaml for a filename will find nothing and prove
+   nothing. Then confirm a selection/path-filter job does not skip the suite
+   for the paths this PR touches. Run by hand only what is genuinely ungated,
+   and say which when you report.
 
 ## Judging a red check
 

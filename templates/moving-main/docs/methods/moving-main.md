@@ -96,20 +96,54 @@ A failing check is a claim, not a verdict. Rank the evidence:
 
 Only after those three should you treat it as a regression.
 
-## 5. CI does not run everything in the repo
+## 5. CI does not necessarily run the test a PR adds
 
-A PR that adds a test is not the same as a PR that adds a *gate*. New test files
-are frequently never wired into the workflow, so the behavior they cover has no
-protection the moment the author stops watching.
+A PR that adds a test is not the same as a PR that adds a *gate*. A new test
+file can go unwired, and then the behavior it covers has no protection the
+moment the author stops watching.
 
-Check before merging, and say so in the merge note:
+Establish **how this workflow finds tests** before concluding anything. There
+are two designs and they fail in opposite directions:
+
+**Hardcoded list.** Each suite is named in the workflow. A new test is ungated
+until someone edits the yaml.
 
 ```sh
 grep -o 'tests/[A-Za-z0-9_./-]*' .github/workflows/*.yml | sort -u
 ```
 
 Diff that against the test files the PR adds. Anything in the PR but not in the
-workflow is a test you must run by hand now, and a follow-up issue to file.
+list is a test to run by hand now, and a follow-up issue to file.
+
+**Auto-discovery.** The workflow calls a runner that globs the test directory,
+so a new test is gated the moment it lands with the right shape (a marker
+string, a launchable entry point). Grepping the yaml for a filename finds
+nothing and proves nothing.
+
+Tell them apart by looking for a step that runs a script rather than naming
+suites, then reading that script:
+
+```sh
+grep -nE 'run:.*\.(py|sh|mjs|js)' .github/workflows/*.yml
+```
+
+Under auto-discovery, run the discovery function and read its output instead of
+grepping:
+
+```sh
+python3 -c "import sys; sys.path.insert(0,'tools/ci'); from run_headless import catalog; print(*[c[0] for c in catalog()], sep=chr(10))"
+```
+
+Then check the test actually reaches the runner: a selection or path-filter job
+can skip the whole suite for the paths the PR touches, so discovery alone is
+not the gate. Run the selector against the PR's files and confirm it turns the
+suite on.
+
+**The failure this prevents is a false alarm**, not a missed test: grepping the
+yaml of an auto-discovering workflow "proves" a test is ungated when it is
+already covered, and the fix that follows (hand-adding it to the yaml)
+duplicates every run and reinstates the hardcoded list the project deliberately
+removed. Cheap to check, expensive to get backwards.
 
 ## Merging
 
@@ -146,5 +180,6 @@ entries, most on long-merged branches, is normal and worth a periodic prune.
 - Check the `event` on a failing run before debugging the test.
 - Re-import assets after any rebase before trusting a local failure.
 - Same SHA green somewhere else means flake.
-- Grep the workflow for the tests a PR adds.
+- Learn how the workflow finds tests before calling one ungated; auto-discovery
+  makes a yaml grep prove nothing.
 - Verify the merge and the branch deletion separately from the command's exit code.
