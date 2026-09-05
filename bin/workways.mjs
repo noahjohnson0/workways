@@ -14,6 +14,7 @@ Clusters:
   method            Shipping methodology (atomic-PR, worktree, manual-QA, screenshots)
   pr-screenshots    screenshot.sh + gh-attach + convention doc
   rn-e2e            sim-lock + metro-lock + wdio harness for parallel RN e2e
+  moving-main       Merge safely onto a base other agents are moving under you
 
 Options:
   --dest <dir>      Destination root (default: cwd)
