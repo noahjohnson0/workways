@@ -63,11 +63,16 @@ Claude skill with **lazy-loaded per-site subskills**:
 - `.claude/skills/browser-attach/sites/ebay.md` — Akamai `/sch` "Access Denied"
   and the search-from-homepage workaround; result selectors; query params
 - `.claude/skills/browser-attach/sites/facebook.md` — Marketplace login,
-  location-scoped URLs, "Partner listing" ≠ local, scroll-to-load, obfuscated-
-  class scraping
+  location-scoped URLs, the `radius` param being in **kilometres**, when to drop
+  lat/long entirely, why brand-name queries lose to generic ones, "Partner
+  listing" ≠ local, scroll-to-load, obfuscated-class scraping, and the
+  Claude-in-Chrome extension's truncation / batch-timeout / blocked-result limits
 - `.claude/skills/browser-attach/sites/_new-site.md` — stub for the next site
 - `docs/methods/browser-attach.md` — the method, including what it does/doesn't
   defeat (beats the flag; not Akamai/Cloudflare/Turnstile or Google sign-in)
+- `docs/methods/scrape-fanout.md` — scaling a scrape past one agent: N scanners
+  on disjoint query slices, each appending JSONL to its own file, a local page
+  polling `data.json` so rows appear live instead of arriving as a final report
 
 ### `zsh-keybindings`
 Fix Option+Left / Option+Right in zsh so they jump word-by-word (matching Claude Code, browsers, and every native macOS text field). Without this you get garbage like `;3C;3D` in your prompt.
