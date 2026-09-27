@@ -16,6 +16,7 @@ export const CLUSTERS = {
   godot: 'Headless Godot 4.x verification: capture the viewport to a PNG from a no-window boot, plus a co-op + dedicated-server gotchas method.',
   'prose-voice': 'Kill the AI-voice tells in writing: a banned-constructions checklist plus a dependency-free scanner you can wire into pre-commit.',
   'moving-main': 'Land PRs when several agents merge into the same base at once: push-vs-pull_request CI divergence, stale worktree asset caches, flake triage, and a merge gate that re-checks at merge time.',
+  'handoff-commands': 'When the user has to run a command for the agent, hand them a short script file, not a long one-liner that terminal wrapping breaks.',
 };
 
 export function list() {
