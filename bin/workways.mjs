@@ -15,6 +15,7 @@ Clusters:
   pr-screenshots    screenshot.sh + gh-attach + convention doc
   rn-e2e            sim-lock + metro-lock + wdio harness for parallel RN e2e
   moving-main       Merge safely onto a base other agents are moving under you
+  handoff-commands  Hand the user a script file, not a wrapped one-liner
 
 Options:
   --dest <dir>      Destination root (default: cwd)

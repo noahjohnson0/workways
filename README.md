@@ -96,6 +96,10 @@ For repos where several agents each work in their own worktree and open their ow
 - `scripts/merge-when-green.sh` — polls the checks and squash-merges only if every one succeeded, re-read at merge time; refuses on failure and points at the run-event comparison first
 - `.claude/skills/merge-when-green/SKILL.md` — the agent-facing procedure: scope the conflict, re-import after rebase, judge the red check before debugging it
 
+### `handoff-commands`
+When the agent can't run a command itself (a permission classifier denied it, it needs `sudo`) and asks the user to run it with `! <command>`, a long one-liner breaks: the terminal wraps the paste, so a `cd` path splits mid-word and an `&&` lands at the start of a line (`parse error near '&&'`). Write a short script instead and ask for `! bash ~/<task>.sh`.
+- `docs/methods/handoff-commands.md`: the rule (`set -euo pipefail`, a comment saying what it does, a verification step at the end, nothing typed past about 60 characters) with a before/after example
+
 ## Philosophy
 
 Scaffold, don't depend. Half of this is bash + Markdown — that has to live in your repo anyway. The Node/Playwright pieces you'll want to customize. Owning the files makes both natural.
