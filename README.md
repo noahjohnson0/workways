@@ -100,6 +100,14 @@ For repos where several agents each work in their own worktree and open their ow
 When the agent can't run a command itself (a permission classifier denied it, it needs `sudo`) and asks the user to run it with `! <command>`, a long one-liner breaks: the terminal wraps the paste, so a `cd` path splits mid-word and an `&&` lands at the start of a line (`parse error near '&&'`). Write a short script instead and ask for `! bash ~/<task>.sh`.
 - `docs/methods/handoff-commands.md`: the rule (`set -euo pipefail`, a comment saying what it does, a verification step at the end, nothing typed past about 60 characters) with a before/after example
 
+### `touchid-secrets`
+Give scripts and coding agents passwords without leaving them in env vars or `.env` files: the secret lives in the macOS keychain and every read needs a live fingerprint, so an agent can't take it silently. The obvious way to do this (a biometric access control on the keychain item) needs a restricted entitlement that a plain `swiftc` binary can't have: `errSecMissingEntitlement` (-34018), or SIGKILL at launch if you add the entitlement with ad-hoc signing. This gates the read with `LAContext` instead, which needs no entitlements.
+- `scripts/tpkc/tpkc.swift`: `store` / `get` / `delete`; `get` requires Touch ID (device password fallback) and prints the secret to stdout; exit 2 on denial
+- `scripts/tpkc/build.sh`: compiles it with `swiftc`
+- `scripts/tpkc/store.sh`: takes the secret through a hidden `osascript` dialog (agent `!` shells have no stdin, so `read -s` dies silently), then verifies with one Touch ID read
+- `docs/methods/touchid-secrets.md`: the pattern, calling it from code, the three dead ends with their exact errors, and what it does and does not protect against
+- `.claude/skills/touchid-secrets/SKILL.md`: agent rules: warn before a prompt, one read per run, never print the secret, take a denial as no
+
 ## Philosophy
 
 Scaffold, don't depend. Half of this is bash + Markdown — that has to live in your repo anyway. The Node/Playwright pieces you'll want to customize. Owning the files makes both natural.

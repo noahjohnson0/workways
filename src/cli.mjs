@@ -17,6 +17,7 @@ export const CLUSTERS = {
   'prose-voice': 'Kill the AI-voice tells in writing: a banned-constructions checklist plus a dependency-free scanner you can wire into pre-commit.',
   'moving-main': 'Land PRs when several agents merge into the same base at once: push-vs-pull_request CI divergence, stale worktree asset caches, flake triage, and a merge gate that re-checks at merge time.',
   'handoff-commands': 'When the user has to run a command for the agent, hand them a short script file, not a long one-liner that terminal wrapping breaks.',
+  'touchid-secrets': 'Passwords and keys for scripts and agents in the macOS keychain, released only after a live Touch ID check. Entitlement-free Swift helper + store script + agent skill.',
 };
 
 export function list() {
