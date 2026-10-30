@@ -108,6 +108,11 @@ Give scripts and coding agents passwords without leaving them in env vars or `.e
 - `docs/methods/touchid-secrets.md`: the pattern, calling it from code, the three dead ends with their exact errors, and what it does and does not protect against
 - `.claude/skills/touchid-secrets/SKILL.md`: agent rules: warn before a prompt, one read per run, never print the secret, take a denial as no
 
+### `android-kernel-features`
+When an Android device feature looks absent, the framework's verdict is not the kernel's. On a Lenovo tablet, `dumpsys power` reported `mDoubleTapWakeEnabled=false`, the vendor's `/proc/android_touch/` held only `self_test`, and a depth-limited `find` came back empty, all of which said double-tap-to-wake was impossible. It was not: `grep -i gesture /proc/kallsyms` showed the touch driver had full gesture-wake support compiled in and named the exact writable sysfs attribute, which an unrestricted `find /sys` then located eight levels deep. Writing `1` to it made the panel emit `KEY_WAKEUP`, which Android handles natively, so the framework config was never on the path.
+- `docs/methods/android-kernel-features.md`: reading `_store` / `dev_attr_` / `_fops` symbols as node names, verifying with `getevent` rather than by eye, and the gotchas (Magisk `su -c` roots only the first command of a `;` chain, some sysfs reads hard-crash the device, sysfs resets every boot, wireless adb returns on a new random port that `adb mdns services` finds)
+- `scripts/android-probe-feature.sh`: `./android-probe-feature.sh <keyword>` dumps matching kernel symbols, the writable attrs they imply, every matching `/sys` and `/proc` node, and each one's perms and value, with timeouts so a hostile node cannot hang the shell
+
 ## Philosophy
 
 Scaffold, don't depend. Half of this is bash + Markdown — that has to live in your repo anyway. The Node/Playwright pieces you'll want to customize. Owning the files makes both natural.
