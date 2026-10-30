@@ -153,6 +153,24 @@ adb shell su -c 'cp a b'
 adb shell su -c 'chmod 755 b'
 ```
 
+**A redirect in `su -c` runs as the wrong user.** The `>` is performed by the
+outer, unprivileged shell before `su` is ever invoked, so writing to a
+root-owned node fails even though the command looks rooted:
+
+```sh
+adb shell su -c "echo 1 > /proc/gesture_control"      # Permission denied
+```
+
+Quote the whole `su` invocation so the redirect happens inside it:
+
+```sh
+adb shell "su -c 'echo 1 > /proc/gesture_control'"    # works
+```
+
+This is why pushing a script and running `su -c 'sh /data/local/tmp/x.sh'`
+tends to work when the equivalent inline command does not: the redirect is
+inside the script, which is already running as root.
+
 **Some sysfs reads hard-crash the device.** Reading
 `/sys/touchscreen/ts_suspend` on this tablet took it down and forced a reboot.
 Wrap exploratory reads so one bad node cannot hang your shell, and expect to
@@ -163,16 +181,53 @@ timeout 3 cat "$node"; echo "(rc=$?)"
 ```
 
 **These flags reset to off on every boot.** sysfs is not persistent storage. On
-a Magisk device, re-arm from `/data/adb/service.d/<name>.sh`, mode 755, with a
-wait loop because the node may not exist yet at `late_start`:
+a Magisk device, re-arm from `/data/adb/service.d/<name>.sh`, mode 755.
+
+The trap is timing, and it fails silently. Magisk's `late_start` runs *before*
+the driver finishes its own init, so a write there lands and is then wiped when
+the driver comes up. Waiting for the node to merely *exist* is not enough: it
+exists early, which is exactly what makes this look like it worked.
+
+Do not write once and assume. Wait for `sys.boot_completed`, then write and
+**read back**, retrying until it sticks:
 
 ```sh
 #!/system/bin/sh
 G=/sys/.../misc/gesture_en
-i=0; while [ $i -lt 60 ]; do [ -e "$G" ] && break; sleep 2; i=$((i+1)); done
-sleep 10
-echo 1 > "$G"
+STATUS=/data/local/tmp/mything.status
+
+i=0
+while [ "$(getprop sys.boot_completed)" != "1" ] && [ $i -lt 150 ]; do
+  sleep 2; i=$((i+1))
+done
+
+i=0
+while [ $i -lt 40 ]; do
+  echo 1 > "$G" 2>/dev/null
+  sleep 5
+  if cat "$G" 2>/dev/null | grep -q "is enable"; then
+    echo "$(date '+%F %T') armed after $((i+1)) try, uptime $(cut -d. -f1 /proc/uptime)s" >> "$STATUS"
+    exit 0
+  fi
+  i=$((i+1))
+done
+echo "$(date '+%F %T') FAILED after $i tries" >> "$STATUS"
 ```
+
+**Diagnosing a boot script that "did nothing".** Two very different failures
+look identical from the outside: Magisk never ran it, or it ran and was
+clobbered. `/cache/magisk.log` tells them apart:
+
+```
+21:42:48.892  ** late_start service mode running
+21:42:48.909  service.d: exec [dt2w.sh]     <- it ran; the write got wiped
+21:43:01.722  ** boot-complete triggered
+```
+
+**Do not rely on `log -t` for boot-time evidence.** Android devices commonly run
+256K logger buffers, and boot generates enough traffic to rotate a single line
+away within minutes, so an empty `logcat -s mytag` proves nothing. Append to a
+file under `/data/local/tmp/` as well, as above.
 
 **Android wireless debugging dies on reboot and comes back on a new random
 port.** Do not port-scan for it. Ask mDNS:
@@ -184,6 +239,19 @@ adb connect 192.168.1.x:40575
 
 The toggle itself also has to be switched back on by hand on the device after a
 reboot, so a tablet that pings but refuses every port is usually just that.
+
+If you have root, stop living with it. Classic adb-over-TCP has no such
+behaviour, so set it from `service.d` once and the toggle is never needed
+again:
+
+```sh
+setprop persist.adb.tcp.port 5555
+setprop service.adb.tcp.port 5555
+stop adbd; start adbd
+```
+
+Check `ro.adb.secure` first. At `1`, adb still requires an authorised host key;
+at `0` you have just opened an unauthenticated root shell to the LAN.
 
 ## Related
 

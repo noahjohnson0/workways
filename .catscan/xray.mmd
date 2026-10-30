@@ -1,0 +1,25 @@
+%% catscan X-ray: workways
+graph LR
+  subgraph entry
+    bin[🐾 bin/workways.mjs]
+  end
+  subgraph src
+    cli[src/cli.mjs<br/>list / add / walk]
+    reg[CLUSTERS registry<br/>9 entries]
+  end
+  subgraph templates
+    method[method]
+    prs[pr-screenshots<br/>gh-attach + playwright]
+    rn[rn-e2e<br/>sim-lock + metro-lock + wdio]
+    mm[moving-main]
+    ba[browser-attach]
+    gd[godot]
+    pv[prose-voice]
+    so[serveoptions]
+    zsh[zsh-keybindings]
+  end
+  dest[(your repo<br/>--dest / cwd)]
+  bin --> cli --> reg
+  reg --> method & prs & rn & mm & ba & gd & pv & so & zsh
+  cli -- copyFile --> dest
+  bin -. help text lists only 4 .-> reg
