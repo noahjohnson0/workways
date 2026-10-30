@@ -17,6 +17,7 @@ Clusters:
   moving-main       Merge safely onto a base other agents are moving under you
   handoff-commands  Hand the user a script file, not a wrapped one-liner
   touchid-secrets   Keychain secrets for scripts/agents, Touch ID on every read
+  android-kernel-features  Dig a "missing" Android feature out of the kernel via kallsyms
 
 Options:
   --dest <dir>      Destination root (default: cwd)
